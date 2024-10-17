@@ -4,7 +4,7 @@ name: default
 kind: pipeline
 type: kubernetes
 node_selector:
-  CPUs: 8
+  k8s.levitate.bio/node-cpus: 8
 
 steps:
 
