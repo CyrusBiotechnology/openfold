@@ -3,6 +3,7 @@ channels:
   - conda-forge
   - bioconda
   - pytorch
+  - nvidia
 dependencies:
   - conda-forge::python=3.8
   - conda-forge::setuptools=59.5.0
