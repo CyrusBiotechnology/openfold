@@ -31,9 +31,17 @@ RUN conda config --add channels conda-forge \
   && conda config --add channels pytorch \
   && conda config --add channels nvidia
 
-RUN conda install -c conda-forge setuptools=59.5.0 pip openmm=7.7 pdbfixer
-RUN conda install -c bioconda hmmer=3.3.2 hhsuite=3.3.0 kalign2=2.04
+RUN conda install -c conda-forge setuptools=59.5.0 \
+  && conda install -c conda-forge pip \
+  && conda install -c conda-forge openmm=7.7 \
+  && conda install -c conda-forge pdbfixer \
+
+RUN conda install -c bioconda hmmer=3.3.2 \
+  && conda install -c bioconda hhsuite=3.3.0 \
+  && conda install -c bioconda kalign2=2.04 \
+
 RUN conda install -c pytorch pytorch=2.1.0
+
 RUN conda install -c nvidia cuda-toolkit=12.1.1
 
 RUN conda run pip install biopython==1.79 \
