@@ -34,12 +34,12 @@ steps:
 
   - name: release server image
     image: plugins/gar
-    volumes:
-    - name: cache
-      path: /var/lib/docker
     privileged: true
     settings:
       repo: cyrus-containers/levitate-docker/openfold
       registry: us-docker.pkg.dev
       json_key:
         from_secret: drone-sa-key
+    volumes:
+    - name: cache
+      path: /var/lib/docker
