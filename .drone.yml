@@ -27,10 +27,9 @@ steps:
         - tag
 
   - name: release server image
-    image: plugins/gcr
+    image: plugins/gar
     settings:
-      repo: cyrus-containers/openfold
-      debug: true
-      dockerfile: docker/Dockerfile
+      repo: cyrus-containers/levitate-docker/openfold
+      registry: us-docker.pkg.dev
       json_key:
-        from_secret: dockerconfigjson
+        from_secret: drone-sa-key
