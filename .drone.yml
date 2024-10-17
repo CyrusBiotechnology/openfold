@@ -5,6 +5,9 @@ kind: pipeline
 type: kubernetes
 node_selector:
   k8s.levitate.bio/node-cpus: 8
+volumes:
+- name: "cache"
+  claim: "openfold-repo-cache"
 
 steps:
 
@@ -29,6 +32,9 @@ steps:
   - name: release server image
     image: plugins/gar
     privileged: true
+    volumes:
+    - name: cache
+      path: "/var/lib/docker"
     settings:
       repo: cyrus-containers/levitate-docker/openfold
       registry: us-docker.pkg.dev
