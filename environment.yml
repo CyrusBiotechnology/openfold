@@ -9,7 +9,7 @@ dependencies:
   - conda-forge::pip
   - conda-forge::openmm=7.7
   - conda-forge::pdbfixer
-  - conda-forge::cudatoolkit==12.1
+  - conda-forge::cudatoolkit==12.1.1
   - bioconda::hmmer==3.3.2
   - bioconda::hhsuite==3.3.0
   - bioconda::kalign2==2.04
