@@ -7,7 +7,8 @@ node_selector:
   k8s.levitate.bio/node-cpus: 8
 volumes:
 - name: "cache"
-  claim: "openfold-repo-cache"
+  claim:
+    name: "openfold-repo-cache"
 
 steps:
 
