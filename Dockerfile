@@ -29,7 +29,7 @@ ENV PATH /opt/conda/bin:$PATH
 RUN conda config --add channels conda-forge \
   && conda config --add channels bioconda \
   && conda config --add channels pytorch \
-  && conda config --add channels nvidia \
+  && conda config --add channels nvidia
 
 RUN conda install -c conda-forge setuptools=59.5.0 pip openmm=7.7 pdbfixer
 RUN conda install -c bioconda hmmer=3.3.2 hhsuite=3.3.0 kalign2=2.04
