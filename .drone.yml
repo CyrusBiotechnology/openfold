@@ -34,10 +34,10 @@ steps:
 
   - name: release server image
     image: plugins/gar
-    privileged: true
     volumes:
     - name: "cache"
       path: "/var/lib/docker"
+    privileged: true
     settings:
       repo: cyrus-containers/levitate-docker/openfold
       registry: us-docker.pkg.dev
