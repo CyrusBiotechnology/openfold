@@ -28,6 +28,7 @@ steps:
 
   - name: release server image
     image: plugins/gar
+    privileged: true
     settings:
       repo: cyrus-containers/levitate-docker/openfold
       registry: us-docker.pkg.dev
