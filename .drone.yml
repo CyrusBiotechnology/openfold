@@ -5,6 +5,8 @@ kind: pipeline
 type: kubernetes
 node_selector:
   k8s.levitate.bio/node-cpus: 8
+concurrency:
+  limit: 1
 volumes:
 - name: "cache"
   claim:
