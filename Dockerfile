@@ -1,4 +1,5 @@
-FROM nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu18.04
+ARG CUDA=12.1.1
+FROM nvidia/cuda:${CUDA}-cudnn8-runtime-ubuntu20.04
 
 # metainformation
 LABEL org.opencontainers.image.version = "1.0.0"
@@ -7,21 +8,57 @@ LABEL org.opencontainers.image.source = "https://github.com/aqlaboratory/openfol
 LABEL org.opencontainers.image.licenses = "Apache License 2.0"
 LABEL org.opencontainers.image.base.name="docker.io/nvidia/cuda:10.2-cudnn8-runtime-ubuntu18.04"
 
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-key del 7fa2af80
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 
-RUN apt-get update && apt-get install -y wget libxml2 cuda-minimal-build-11-3 libcusparse-dev-11-3 libcublas-dev-11-3 libcusolver-dev-11-3 git
+RUN apt-get update && apt-get install -y wget libxml2 cuda-minimal-build-12-1 libcusparse-dev-12-1 libcublas-dev-12-1 libcusolver-dev-12-1 git
 RUN wget -P /tmp \
     "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" \
     && bash /tmp/Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
     && rm /tmp/Miniconda3-latest-Linux-x86_64.sh
 ENV PATH /opt/conda/bin:$PATH
 
-COPY environment.yml /opt/openfold/environment.yml
+# COPY environment.yml /opt/openfold/environment.yml
 
 # installing into the base environment since the docker container wont do anything other than run openfold
-RUN conda env update -n base --file /opt/openfold/environment.yml && conda clean --all
+# RUN conda env update -n base --file /opt/openfold/environment.yml && conda clean --all
+RUN conda config --set solver classic
+
+RUN conda config --add channels conda-forge \
+  && conda config --add channels bioconda \
+  && conda config --add channels pytorch \
+  && conda config --add channels nvidia
+
+RUN conda install -c conda-forge python=3.8
+RUN conda install -c conda-forge setuptools=59.5.0
+RUN conda install -c conda-forge pip
+RUN conda install -c conda-forge openmm=7.7
+RUN conda install -c conda-forge pdbfixer
+
+RUN conda install -c bioconda hmmer=3.3.2 \
+  && conda install -c bioconda hhsuite=3.3.0 \
+  && conda install -c bioconda kalign2=2.04 \
+
+RUN conda install -c pytorch pytorch=2.1.0
+
+RUN conda install -c nvidia cuda-toolkit=12.1.1
+
+RUN conda run pip install biopython==1.79 \
+    deepspeed==0.5.10 \
+    dm-tree==0.1.6 \
+    ml-collections==0.1.0 \
+    numpy==1.21.2 \
+    PyYAML==5.4.1 \
+    requests==2.26.0 \
+    scipy==1.7.1 \
+    tqdm==4.62.2 \
+    typing-extensions \
+    pytorch_lightning==2.1.4 \
+    wandb==0.12.21 \
+    git+https://github.com/NVIDIA/dllogger.git
 
 COPY openfold /opt/openfold/openfold
 COPY scripts /opt/openfold/scripts

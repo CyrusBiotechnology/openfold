@@ -14,7 +14,7 @@ dependencies:
   - bioconda::hhsuite==3.3.0
   - bioconda::kalign2==2.04
   - pytorch::pytorch=2.1.0
-  - nvidia::cuda-toolkit==12.1.1
+  - nvidia::cudatoolkit==12.1.1
   - pip:
       - biopython==1.79
       - deepspeed==0.5.10
