@@ -25,6 +25,7 @@ ENV PATH /opt/conda/bin:$PATH
 
 # installing into the base environment since the docker container wont do anything other than run openfold
 # RUN conda env update -n base --file /opt/openfold/environment.yml && conda clean --all
+RUN conda config --set solver classic
 
 RUN conda config --add channels conda-forge \
   && conda config --add channels bioconda \
