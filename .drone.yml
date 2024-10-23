@@ -1,0 +1,45 @@
+---
+
+name: default
+kind: pipeline
+type: kubernetes
+node_selector:
+  k8s.levitate.bio/node-cpus: 8
+concurrency:
+  limit: 1
+volumes:
+- name: cache
+  claim:
+    name: openfold-repo-cache
+
+steps:
+
+  - name: get version -- branch
+    image: ubuntu:latest
+    commands:
+      - echo $(cat VERSION)-alphafold-$(cat alphafold/version.py | grep version | grep -oP "\d+\.\d+\.\d+")-$(echo $DRONE_COMMIT_BRANCH | sed 's/[/_-]//g')-$DRONE_BUILD_NUMBER > .tags
+      - echo $(cat .tags)
+    when:
+      event:
+        - push
+
+  - name: get version -- tag
+    image: ubuntu:latest
+    commands:
+      - echo $(cat VERSION)-alphafold-$(cat alphafold/version.py | grep version | grep -oP "\d+\.\d+\.\d+") > .tags
+      - echo $(cat .tags)
+    when:
+      event:
+        - tag
+
+  - name: release server image
+    image: plugins/gar
+    privileged: true
+    settings:
+      repo: cyrus-containers/levitate-docker/openfold
+      registry: us-docker.pkg.dev
+      json_key:
+        from_secret: drone-sa-key
+    volumes:
+    - name: cache
+      path: /var/lib/docker

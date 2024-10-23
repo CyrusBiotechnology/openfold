@@ -1,4 +1,5 @@
-FROM nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu18.04
+ARG CUDA=11.6.0
+FROM nvidia/cuda:${CUDA}-cudnn8-runtime-ubuntu18.04
 
 # metainformation
 LABEL org.opencontainers.image.version = "1.0.0"
@@ -11,12 +12,26 @@ RUN apt-key del 7fa2af80
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 
-RUN apt-get update && apt-get install -y wget libxml2 cuda-minimal-build-11-3 libcusparse-dev-11-3 libcublas-dev-11-3 libcusolver-dev-11-3 git
+RUN apt-get update
+RUN apt-get install -y wget \
+    git \
+    libxml2 \
+    cuda-minimal-build-11-6 \
+    libcusparse-dev-11-6 \
+    libcublas-dev-11-6 \
+    libcusolver-dev-11-6
+
 RUN wget -P /tmp \
     "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" \
     && bash /tmp/Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
     && rm /tmp/Miniconda3-latest-Linux-x86_64.sh
 ENV PATH /opt/conda/bin:$PATH
+
+# Install CUDA Compatiblity packages here. This is commented out because is not needed unless running
+# on driver version that does not meet the minimum required driver version for CUDA 11.6
+# https://docs.nvidia.com/cuda/archive/11.6.0/cuda-toolkit-release-notes/index.html
+# RUN apt-get install -y cuda-compat-11.6
+# ENV LD_LIBRARY_PATH=/usr/local/cuda/compat:$LD_LIBRARY_PATH
 
 COPY environment.yml /opt/openfold/environment.yml
 
